@@ -51,10 +51,6 @@ public class Authentication {
         return email;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public void setUsername(String username) {
         this.username = username;
     }

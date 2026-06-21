@@ -1,0 +1,75 @@
+### Valid registration (201 if user is free, 400 if user is taken)
+POST localhost:8080/auth/register
+Content-Type: application/json
+
+{
+    "username": "testUser",
+    "password": "testPassword",
+    "email": "test.mail@mail.de"
+}
+
+### Invalid username in registration (400 validation error)
+POST localhost:8080/auth/register
+Content-Type: application/json
+
+{
+"username": "test",
+"password": "testPassword",
+"email": "test.mail@mail.de"
+}
+
+### Invalid password in registration (400 validation error)
+POST localhost:8080/auth/register
+Content-Type: application/json
+
+{
+  "username": "testUser",
+  "password": "test",
+  "email": "test.mail@mail.de"
+}
+
+### Invalid email in registration (400 validation error)
+POST localhost:8080/auth/register
+Content-Type: application/json
+
+{
+  "username": "testUser",
+  "password": "testPassword",
+  "email": "test"
+}
+
+### Valid login (200 if user exists, 400 otherwise)
+POST localhost:8080/auth/login
+Content-Type: application/json
+
+{
+  "username": "testUser",
+  "password": "testPassword"
+}
+
+### Wrong password in login (400 wrong password)
+POST localhost:8080/auth/login
+Content-Type: application/json
+
+{
+  "username": "testUser",
+  "password": "password"
+}
+
+### Invalid username in login (400 validation error)
+POST localhost:8080/auth/login
+Content-Type: application/json
+
+{
+  "username": "test",
+  "password": "testPassword"
+}
+
+### Invalid password in login (400 validation error)
+POST localhost:8080/auth/login
+Content-Type: application/json
+
+{
+  "username": "testUser",
+  "password": "test"
+}

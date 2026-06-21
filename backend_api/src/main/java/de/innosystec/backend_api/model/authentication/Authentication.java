@@ -1,12 +1,12 @@
 package de.innosystec.backend_api.model.authentication;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import de.innosystec.backend_api.model.recipe.Recipe;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
+
+import java.util.List;
 
 @Entity
 public class Authentication {
@@ -23,6 +23,12 @@ public class Authentication {
 
     @Email
     private String email;
+
+    @OneToMany(mappedBy = "trackedObject",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY)
+    private List<Recipe> recipes;
 
     protected Authentication() {
     }

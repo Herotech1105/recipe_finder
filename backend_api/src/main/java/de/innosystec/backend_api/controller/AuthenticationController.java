@@ -1,8 +1,8 @@
 package de.innosystec.backend_api.controller;
 
-import de.innosystec.backend_api.model.LoginRequestDTO;
-import de.innosystec.backend_api.model.LoginResponseDTO;
-import de.innosystec.backend_api.model.RegistrationDTO;
+import de.innosystec.backend_api.model.authentication.LoginRequestDTO;
+import de.innosystec.backend_api.model.authentication.LoginResponseDTO;
+import de.innosystec.backend_api.model.authentication.RegistrationDTO;
 import de.innosystec.backend_api.service.AuthenticationService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;

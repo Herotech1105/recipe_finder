@@ -1,4 +1,4 @@
-package de.innosystec.backend_api.exception;
+package de.innosystec.backend_api.exception.authentication;
 
 public class AuthenticationNotFoundException extends RuntimeException {
     public AuthenticationNotFoundException(String username) {

@@ -1,4 +1,4 @@
-package de.innosystec.backend_api.exception;
+package de.innosystec.backend_api.exception.authentication;
 
 public class CredentialsAlreadyTakenException extends RuntimeException {
     public CredentialsAlreadyTakenException(String field, String value) {

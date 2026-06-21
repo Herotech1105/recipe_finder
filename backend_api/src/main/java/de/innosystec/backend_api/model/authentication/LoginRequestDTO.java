@@ -1,4 +1,4 @@
-package de.innosystec.backend_api.model;
+package de.innosystec.backend_api.model.authentication;
 
 import jakarta.validation.constraints.Size;
 

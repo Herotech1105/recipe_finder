@@ -1,9 +1,9 @@
 package de.innosystec.backend_api.exception_handler;
 
 
-import de.innosystec.backend_api.exception.AuthenticationNotFoundException;
-import de.innosystec.backend_api.exception.CredentialsAlreadyTakenException;
-import de.innosystec.backend_api.exception.WrongPasswordException;
+import de.innosystec.backend_api.exception.authentication.AuthenticationNotFoundException;
+import de.innosystec.backend_api.exception.authentication.CredentialsAlreadyTakenException;
+import de.innosystec.backend_api.exception.authentication.WrongPasswordException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.ExceptionHandler;

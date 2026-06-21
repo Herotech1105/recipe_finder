@@ -6,7 +6,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 @Entity
@@ -19,8 +18,7 @@ public class Authentication {
     @Size(min = 6, max = 20)
     private String username;
 
-    @Pattern(regexp = "\\b[A-Fa-f0-9]{64}\\b")
-    @Size(min = 64, max = 64)
+    @Size(min = 64, max = 80)
     private String passwordHash;
 
     @Email

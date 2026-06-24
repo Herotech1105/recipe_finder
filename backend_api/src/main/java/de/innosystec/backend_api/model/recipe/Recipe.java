@@ -15,7 +15,7 @@ public class Recipe {
     @Size(min = 6, max = 100)
     private String title;
 
-    @Size(max = 10000)
+    @Size(min=20 ,max = 10000)
     private String preparation;
 
     @ElementCollection
@@ -24,6 +24,7 @@ public class Recipe {
             joinColumns = @JoinColumn(name = "recipe_id")
     )
     @MapKeyJoinColumn(name = "ingredient_id")
+    @Size( min = 3, max = 50)
     private Map<Ingredient, Amount> ingredients;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

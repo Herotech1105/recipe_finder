@@ -11,7 +11,7 @@ public class Ingredient {
     @GeneratedValue
     private Long id;
 
-    @Size
+    @Size(min = 1, max = 30)
     private String name;
 
     protected Ingredient() {

@@ -4,9 +4,7 @@ import de.innosystec.backend_api.model.authentication.Authentication;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
-import org.jspecify.annotations.NonNull;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @Entity
@@ -35,10 +33,11 @@ public class Recipe {
     private Authentication authentication;
 
     public Recipe(@Valid RecipeRequestDTO requestDTO,
-                  @Valid Authentication authentication) {
+                  @Valid Authentication authentication,
+                  @Valid Map<Ingredient, Amount> ingredients) {
         this.title = requestDTO.title();
         this.preparation = requestDTO.preparation();
-        this.ingredients = mapIngredientsFromDTO(requestDTO);
+        this.ingredients = ingredients;
         this.authentication = authentication;
     }
 
@@ -94,13 +93,5 @@ public class Recipe {
         );
     }
 
-    public static @NonNull Map<Ingredient, Amount> mapIngredientsFromDTO(RecipeRequestDTO requestDTO) {
-        Map<Ingredient, Amount> ingredients = new HashMap<>();
-        requestDTO.ingredients().forEach(
-                (ingredientRequestDTO, amount) ->
-                        ingredients.put(new Ingredient(ingredientRequestDTO.name()), amount)
-        );
-        return ingredients;
-    }
 
 }

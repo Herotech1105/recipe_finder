@@ -6,25 +6,31 @@ import de.innosystec.backend_api.exception.recipe.RecipeNotFoundException;
 import de.innosystec.backend_api.model.authentication.Authentication;
 import de.innosystec.backend_api.model.recipe.*;
 import de.innosystec.backend_api.repository.AuthenticationRepository;
+import de.innosystec.backend_api.repository.IngredientRepository;
 import de.innosystec.backend_api.repository.RecipeRepository;
 import de.innosystec.backend_api.util.JWTUtil;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class RecipeService {
     private final RecipeRepository recipeRepository;
     private final AuthenticationRepository authenticationRepository;
+    private final IngredientRepository ingredientRepository;
     private final JWTUtil jwtUtil;
 
     public RecipeService(RecipeRepository recipeRepository,
                          AuthenticationRepository authenticationRepository,
+                         IngredientRepository ingredientRepository,
                          JWTUtil jwtUtil) {
         this.recipeRepository = recipeRepository;
         this.authenticationRepository = authenticationRepository;
+        this.ingredientRepository = ingredientRepository;
         this.jwtUtil = jwtUtil;
     }
 
@@ -44,7 +50,7 @@ public class RecipeService {
                              String jwtToken) {
         String username = jwtUtil.getUsernameFromToken(jwtToken);
         Authentication userAuthentication = findAuthenticationByUsername(username);
-        recipeRepository.save(new Recipe(requestDTO, userAuthentication));
+        recipeRepository.save(new Recipe(requestDTO, userAuthentication, mapIngredientsFromDTO(requestDTO)));
     }
 
     public void deleteRecipe(Long id, String jwtToken) {
@@ -71,7 +77,7 @@ public class RecipeService {
         else {
             recipe.setTitle(requestDTO.title());
             recipe.setPreparation(requestDTO.preparation());
-            recipe.setIngredients(Recipe.mapIngredientsFromDTO(requestDTO));
+            recipe.setIngredients(mapIngredientsFromDTO(requestDTO));
             recipeRepository.save(recipe);
         }
     }
@@ -84,6 +90,22 @@ public class RecipeService {
     private Recipe findRecipeById(Long id) {
         return recipeRepository.findById(id).
                 orElseThrow(() -> new RecipeNotFoundException(id));
+    }
+
+    private Map<Ingredient, Amount> mapIngredientsFromDTO(RecipeRequestDTO requestDTO) {
+        Map<Ingredient, Amount> ingredients = new HashMap<>();
+        requestDTO.ingredients().forEach(
+                (ingredientRequestDTO, amount) -> {
+                    String ingredientName = ingredientRequestDTO.name();
+                    Ingredient ingredient = ingredientRepository.findByName(ingredientName).
+                            orElseGet(() -> {
+                                Ingredient newIngredient = new Ingredient(ingredientName);
+                                ingredientRepository.save(newIngredient);
+                                return newIngredient;
+                            });
+                    ingredients.put(ingredient, amount);
+                });
+        return ingredients;
     }
 
 }

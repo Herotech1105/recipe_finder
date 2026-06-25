@@ -4,10 +4,7 @@ import de.innosystec.backend_api.exception.authentication.AuthenticationNotFound
 import de.innosystec.backend_api.exception.authentication.UnauthorizedException;
 import de.innosystec.backend_api.exception.recipe.RecipeNotFoundException;
 import de.innosystec.backend_api.model.authentication.Authentication;
-import de.innosystec.backend_api.model.recipe.Recipe;
-import de.innosystec.backend_api.model.recipe.RecipeDetailDTO;
-import de.innosystec.backend_api.model.recipe.RecipeListItemDTO;
-import de.innosystec.backend_api.model.recipe.RecipeRequestDTO;
+import de.innosystec.backend_api.model.recipe.*;
 import de.innosystec.backend_api.repository.AuthenticationRepository;
 import de.innosystec.backend_api.repository.RecipeRepository;
 import de.innosystec.backend_api.util.JWTUtil;
@@ -74,7 +71,7 @@ public class RecipeService {
         else {
             recipe.setTitle(requestDTO.title());
             recipe.setPreparation(requestDTO.preparation());
-            recipe.setIngredients(requestDTO.ingredients());
+            recipe.setIngredients(Recipe.mapIngredientsFromDTO(requestDTO));
             recipeRepository.save(recipe);
         }
     }

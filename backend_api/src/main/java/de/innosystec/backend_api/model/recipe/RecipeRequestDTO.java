@@ -14,6 +14,6 @@ public record RecipeRequestDTO(
 
         @Size(min = 3, max = 50)
         @Valid
-        Map<Ingredient, Amount> ingredients
+        Map<IngredientRequestDTO, Amount> ingredients
 ) {
 }

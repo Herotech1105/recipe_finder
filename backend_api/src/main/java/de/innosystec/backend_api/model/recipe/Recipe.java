@@ -2,6 +2,7 @@ package de.innosystec.backend_api.model.recipe;
 
 import de.innosystec.backend_api.model.authentication.Authentication;
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
 
 import java.util.Map;
@@ -31,7 +32,17 @@ public class Recipe {
     @JoinColumn(name = "author_id")
     private Authentication authentication;
 
-    private String imageLink;
+    public Recipe(@Valid RecipeRequestDTO requestDTO,
+                  @Valid Authentication authentication) {
+        this.title = requestDTO.title();
+        this.preparation = requestDTO.preparation();
+        this.ingredients = requestDTO.ingredients();
+        this.authentication = authentication;
+    }
+
+    protected Recipe() {
+
+    }
 
     public String getTitle() {
         return title;
@@ -49,10 +60,6 @@ public class Recipe {
         return ingredients;
     }
 
-    public String getImageLink() {
-        return imageLink;
-    }
-
     public void setTitle(String title) {
         this.title = title;
     }
@@ -65,7 +72,7 @@ public class Recipe {
         return new RecipeListItemDTO(
                 id,
                 title,
-                imageLink
+                "image" + id.toString() + ".recipe.jpeg"
         );
     }
 
@@ -77,7 +84,7 @@ public class Recipe {
                 ingredients,
                 authentication.getId(),
                 authentication.getUsername(),
-                imageLink
+                "image" + id.toString() + ".recipe.jpeg"
         );
     }
 

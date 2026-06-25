@@ -5,6 +5,7 @@ import de.innosystec.backend_api.exception.authentication.AuthenticationNotFound
 import de.innosystec.backend_api.exception.authentication.CredentialsAlreadyTakenException;
 import de.innosystec.backend_api.exception.authentication.UnauthorizedException;
 import de.innosystec.backend_api.exception.authentication.WrongPasswordException;
+import io.jsonwebtoken.MalformedJwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -43,7 +44,16 @@ public class AuthenticationExceptionHandler {
     @ExceptionHandler(UnauthorizedException.class)
     public ProblemDetail handleUnauthorized(UnauthorizedException exception) {
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(
-                HttpStatus.BAD_REQUEST, exception.getMessage()
+                HttpStatus.FORBIDDEN, exception.getMessage()
+        );
+        problem.setTitle("Unauthorized");
+        return problem;
+    }
+
+    @ExceptionHandler(MalformedJwtException.class)
+    public ProblemDetail handleMalformedJWT() {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(
+                HttpStatus.UNAUTHORIZED, "Your JWT token seems to be wrong"
         );
         problem.setTitle("Unauthorized");
         return problem;

@@ -22,4 +22,12 @@ public class Amount {
     protected Amount() {
 
     }
+
+    public double getAmount() {
+        return amount;
+    }
+
+    public Unit getUnit() {
+        return unit;
+    }
 }

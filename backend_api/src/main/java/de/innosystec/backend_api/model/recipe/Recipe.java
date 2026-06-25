@@ -12,7 +12,7 @@ import java.util.Map;
 @Entity
 public class Recipe {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Size(min = 6, max = 100)

@@ -2,13 +2,14 @@ package de.innosystec.backend_api.model.recipe;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.Size;
 
 @Entity
 public class Ingredient {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Size(min = 1, max = 30)
@@ -32,7 +33,7 @@ public class Ingredient {
     // Equals and Hashcode for use as map key
     @Override
     public int hashCode() {
-        return this.id.hashCode();
+        return getClass().hashCode();
     }
 
     @Override
@@ -40,6 +41,7 @@ public class Ingredient {
         if (this == other) return true;
         if (other == null || getClass() != other.getClass()) return false;
         Ingredient otherIngredient = (Ingredient) other;
+        if (this.id == null || otherIngredient.id == null) return false;
         return otherIngredient.id.equals(this.id);
     }
 

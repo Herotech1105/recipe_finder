@@ -67,4 +67,11 @@ public class Authentication {
         this.email = email;
     }
 
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) return true;
+        if (other == null || getClass() != other.getClass()) return false;
+        Authentication otherAuthentication = (Authentication) other;
+        return otherAuthentication.id.equals(this.id);
+    }
 }

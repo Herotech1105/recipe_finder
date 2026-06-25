@@ -24,7 +24,7 @@ public class Authentication {
     @Email
     private String email;
 
-    @OneToMany(mappedBy = "trackedObject",
+    @OneToMany(mappedBy = "authentication",
             cascade = CascadeType.ALL,
             orphanRemoval = true,
             fetch = FetchType.LAZY)

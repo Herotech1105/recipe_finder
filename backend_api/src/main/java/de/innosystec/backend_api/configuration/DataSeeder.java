@@ -16,13 +16,17 @@ public class DataSeeder {
 
     @Value("admin-password")
     private String adminPassword;
+    @Value("demo-password")
+    private String demoPassword;
 
     @Bean
     CommandLineRunner seedAuthentication(AuthenticationService service) {
         return args -> {
-            System.out.println(adminPassword);
             RegistrationDTO adminRegister = new RegistrationDTO("adminUser", adminPassword, "basic.mail@mail.de");
             service.validateRegistration(adminRegister);
+
+            RegistrationDTO demoRegister = new RegistrationDTO("demoUser", demoPassword, "basic.mailTwo@mail.de");
+            service.validateRegistration(demoRegister);
         };
     }
 }

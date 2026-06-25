@@ -1,12 +1,12 @@
 package de.innosystec.backend_api.service;
 
-import de.innosystec.backend_api.exception.AuthenticationNotFoundException;
-import de.innosystec.backend_api.exception.CredentialsAlreadyTakenException;
-import de.innosystec.backend_api.exception.WrongPasswordException;
-import de.innosystec.backend_api.model.Authentication;
-import de.innosystec.backend_api.model.LoginRequestDTO;
-import de.innosystec.backend_api.model.LoginResponseDTO;
-import de.innosystec.backend_api.model.RegistrationDTO;
+import de.innosystec.backend_api.exception.authentication.AuthenticationNotFoundException;
+import de.innosystec.backend_api.exception.authentication.CredentialsAlreadyTakenException;
+import de.innosystec.backend_api.exception.authentication.WrongPasswordException;
+import de.innosystec.backend_api.model.authentication.Authentication;
+import de.innosystec.backend_api.model.authentication.LoginRequestDTO;
+import de.innosystec.backend_api.model.authentication.LoginResponseDTO;
+import de.innosystec.backend_api.model.authentication.RegistrationDTO;
 import de.innosystec.backend_api.repository.AuthenticationRepository;
 import de.innosystec.backend_api.util.JWTUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;

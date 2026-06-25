@@ -1,0 +1,33 @@
+package de.innosystec.backend_api.model.recipe;
+
+import jakarta.persistence.Embeddable;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+
+@Embeddable
+public class Amount {
+    @NotNull
+    private Unit unit;
+
+    @Positive
+    @Max(10000)
+    private double amount;
+
+    public Amount(Unit unit, double amount) {
+        this.unit = unit;
+        this.amount = amount;
+    }
+
+    protected Amount() {
+
+    }
+
+    public double getAmount() {
+        return amount;
+    }
+
+    public Unit getUnit() {
+        return unit;
+    }
+}

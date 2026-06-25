@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Entity
@@ -16,7 +17,7 @@ public class Recipe {
     @Size(min = 6, max = 100)
     private String title;
 
-    @Size(min=20 ,max = 10000)
+    @Size(min = 20, max = 10000)
     private String preparation;
 
     @ElementCollection
@@ -25,7 +26,7 @@ public class Recipe {
             joinColumns = @JoinColumn(name = "recipe_id")
     )
     @MapKeyJoinColumn(name = "ingredient_id")
-    @Size( min = 3, max = 50)
+    @Size(min = 3, max = 50)
     private Map<Ingredient, Amount> ingredients;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -82,11 +83,14 @@ public class Recipe {
     }
 
     public RecipeDetailDTO toRecipeDetailDTO() {
+        Map<String, Amount> ingredientStringMap = new HashMap<>();
+        ingredients.forEach(
+                (ingredient, amount) -> ingredientStringMap.put(ingredient.getName(), amount));
         return new RecipeDetailDTO(
                 id,
                 title,
                 preparation,
-                ingredients,
+                ingredientStringMap,
                 authentication.getId(),
                 authentication.getUsername(),
                 "image" + id.toString() + ".recipe.jpeg"

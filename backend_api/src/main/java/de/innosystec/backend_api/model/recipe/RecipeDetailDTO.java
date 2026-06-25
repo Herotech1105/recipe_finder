@@ -6,7 +6,7 @@ public record RecipeDetailDTO(
         Long id,
         String title,
         String preparation,
-        Map<Ingredient, Amount> ingredients,
+        Map<String, Amount> ingredients,
         Long authorId,
         String authorName,
         String imageLink

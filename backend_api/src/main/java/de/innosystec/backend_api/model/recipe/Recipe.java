@@ -68,6 +68,10 @@ public class Recipe {
         this.preparation = preparation;
     }
 
+    public void setIngredients(Map<Ingredient, Amount> ingredients) {
+        this.ingredients = ingredients;
+    }
+
     public RecipeListItemDTO toRecipeListItemDTO() {
         return new RecipeListItemDTO(
                 id,

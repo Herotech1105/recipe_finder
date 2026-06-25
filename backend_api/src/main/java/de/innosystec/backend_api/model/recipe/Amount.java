@@ -13,4 +13,13 @@ public class Amount {
     @Positive
     @Max(10000)
     private double amount;
+
+    public Amount(Unit unit, double amount) {
+        this.unit = unit;
+        this.amount = amount;
+    }
+
+    protected Amount() {
+
+    }
 }

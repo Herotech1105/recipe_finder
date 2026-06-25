@@ -3,6 +3,7 @@ package de.innosystec.backend_api.exception_handler;
 
 import de.innosystec.backend_api.exception.authentication.AuthenticationNotFoundException;
 import de.innosystec.backend_api.exception.authentication.CredentialsAlreadyTakenException;
+import de.innosystec.backend_api.exception.authentication.UnauthorizedException;
 import de.innosystec.backend_api.exception.authentication.WrongPasswordException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
@@ -36,6 +37,15 @@ public class AuthenticationExceptionHandler {
                 HttpStatus.BAD_REQUEST, exception.getMessage()
         );
         problem.setTitle("Wrong Password");
+        return problem;
+    }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    public ProblemDetail handleUnauthorized(UnauthorizedException exception) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(
+                HttpStatus.BAD_REQUEST, exception.getMessage()
+        );
+        problem.setTitle("Unauthorized");
         return problem;
     }
 

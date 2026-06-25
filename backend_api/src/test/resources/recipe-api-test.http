@@ -1,0 +1,186 @@
+### Valid Login to get authorization token for admin
+POST localhost:8080/auth/login
+Content-Type: application/json
+
+{
+  "username": "adminUser",
+  "password": "admin-password"
+}
+
+> {%
+    client.test("Login Successful And JWT Token Retrieved", function () {
+        client.assert(response.status == 200, "Wrong response status");
+        client.assert(response.body.jwtToken, "Missing JWT Token");
+    });
+    client.global.set("authToken", response.body.jwtToken);
+%}
+
+### Valid Login to get authorization token for admin
+POST localhost:8080/auth/login
+Content-Type: application/json
+
+{
+  "username": "demoUser",
+  "password": "demo-password"
+}
+
+> {%
+    client.test("Login Successful And JWT Token Retrieved", function () {
+        client.assert(response.status == 200, "Wrong response status");
+        client.assert(response.body.jwtToken, "Missing JWT Token");
+    });
+    client.global.set("wrongAuthToken", response.body.jwtToken);
+%}
+
+### Successful Recipe Creation
+POST localhost:8080/recipes
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "title": "testRecipe",
+  "preparation": "How to prepare a test recipe",
+  "ingredients": {
+    "ingredientTwo": {
+      "unit": "g",
+      "amount": 500
+    },
+    "ingredientOne": {
+      "unit": "ml",
+      "amount": 250
+    },
+    "ingredientThree": {
+      "unit": "Stck",
+      "amount": 2
+    }
+  }
+}
+
+> {%
+    client.test("Resource Created Successfully", function () {
+        client.assert(response.status == 201, "Wrong response status");
+    });
+%}
+
+### Get all recipes
+GET localhost:8080/recipes
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+> {%
+    client.test("GET Resources Successfully", function () {
+        client.assert(response.status == 200, "Wrong response status");
+        client.assert(response.body[response.body.length - 1].id, "No id in body")
+    });
+    client.global.set("createdId", response.body[response.body.length - 1].id);
+%}
+
+### Get recipe by Id as Owner
+GET localhost:8080/recipes/{{createdId}}
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+> {%
+    client.test("GET Resource Successfully", function () {
+        client.assert(response.status == 200, "Wrong response status");
+        client.assert(response.body.title == "testRecipe", "Wrong title");
+        client.assert(response.body.preparation == "How to prepare a test recipe", "Wrong preparation");
+        client.assert(response.body.ingredients.ingredientOne.unit == "ml", "Wrong ingredients");
+    });
+%}
+
+### Get recipe by Id as non-Owner
+GET localhost:8080/recipes/{{createdId}}
+Content-Type: application/json
+Authorization: Bearer {{wrongAuthToken}}
+
+> {%
+    client.test("GET Resource Successfully", function () {
+        client.assert(response.status == 200, "Wrong response status");
+        client.assert(response.body.title == "testRecipe", "Wrong title");
+        client.assert(response.body.preparation == "How to prepare a test recipe", "Wrong preparation");
+        client.assert(response.body.ingredients.ingredientOne.unit == "ml", "Wrong ingredients");
+    });
+%}
+
+### Try to Update as non-Owner
+PUT localhost:8080/recipes/{{createdId}}
+Content-Type: application/json
+Authorization: Bearer {{wrongAuthToken}}
+
+{
+  "title": "testRecipe",
+  "preparation": "How to prepare a test recipe",
+  "ingredients": {
+    "ingredientTwo": {
+      "unit": "g",
+      "amount": 500
+    },
+    "ingredientOne": {
+      "unit": "ml",
+      "amount": 250
+    },
+    "ingredientThree": {
+      "unit": "Stck",
+      "amount": 2
+    }
+  }
+}
+
+> {%
+    client.test("Fail To Update Resource", function () {
+        client.assert(response.status == 403, "Wrong response status");
+    });
+%}
+
+### Update as Owner
+PUT localhost:8080/recipes/{{createdId}}
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "title": "testRecipe",
+  "preparation": "How to prepare a test recipe",
+  "ingredients": {
+    "ingredientTwo": {
+      "unit": "g",
+      "amount": 500
+    },
+    "ingredientOne": {
+      "unit": "g",
+      "amount": 250
+    },
+    "ingredientThree": {
+      "unit": "Stck",
+      "amount": 2
+    }
+  }
+}
+
+> {%
+    client.test("Update Resource Successfully", function () {
+        client.assert(response.status == 204, "Wrong response status");
+    });
+%}
+
+### Try to Delete recipe as non-Owner
+DELETE localhost:8080/recipes/{{createdId}}
+Content-Type: application/json
+Authorization: Bearer {{wrongAuthToken}}
+
+> {%
+    client.test("Fail To Delete Resource", function () {
+        client.assert(response.status == 403, "Wrong response status");
+    });
+%}
+
+### Get recipe by Id as non-Owner
+DELETE localhost:8080/recipes/{{createdId}}
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+> {%
+    client.test("Delete Resource Successfully", function () {
+        client.assert(response.status == 204, "Wrong response status");
+    });
+%}

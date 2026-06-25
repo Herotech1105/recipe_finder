@@ -31,13 +31,13 @@ public class RecipeController {
     @PostMapping
     public void createRecipe(@RequestBody @Valid RecipeRequestDTO recipeRequest,
                              @RequestHeader("Authorization") String jwtToken) {
-        service.createRecipe(recipeRequest, jwtToken);
+        service.createRecipe(recipeRequest, jwtToken.substring(7));
     }
 
     @DeleteMapping("/{id}")
     public void deleteRecipe(@PathVariable Long id,
                              @RequestHeader("Authorization") String jwtToken) {
-        service.deleteRecipe(id, jwtToken);
+        service.deleteRecipe(id, jwtToken.substring(7));
     }
 
     @PutMapping("/{id}")
@@ -45,7 +45,7 @@ public class RecipeController {
                              @RequestBody @Valid RecipeRequestDTO recipeRequest,
                              @RequestHeader("Authorization") String jwtToken
     ) {
-        service.updateRecipe(id, recipeRequest, jwtToken);
+        service.updateRecipe(id, recipeRequest, jwtToken.substring(7));
     }
 
 }

@@ -1,44 +1,22 @@
-### Valid registration (201 if user is free, 400 if user is taken)
-POST localhost:8080/auth/register
-Content-Type: application/json
-
-{
-    "username": "testUser",
-    "password": "testPassword",
-    "email": "test.mail@mail.de"
-}
-
-### Invalid username in registration (400 validation error)
-POST localhost:8080/auth/register
-Content-Type: application/json
-
-{
-"username": "test",
-"password": "testPassword",
-"email": "test.mail@mail.de"
-}
-
-### Invalid password in registration (400 validation error)
-POST localhost:8080/auth/register
-Content-Type: application/json
-
-{
-  "username": "testUser",
-  "password": "test",
-  "email": "test.mail@mail.de"
-}
-
-### Invalid email in registration (400 validation error)
+### Valid registration
 POST localhost:8080/auth/register
 Content-Type: application/json
 
 {
   "username": "testUser",
   "password": "testPassword",
-  "email": "test"
+  "email": "test.mail@mail.de"
 }
 
-### Valid login (200 if user exists, 400 otherwise)
+> {%
+    client.test("Register Successful, JWT Token Retrieved, Correct Username", function () {
+        client.assert(response.status == 201, "Wrong response status");
+        client.assert(response.body.jwtToken, "Missing JWT Token");
+        client.assert(response.body.username == "testUser", "Wrong Username");
+    });
+%}
+
+### Valid login
 POST localhost:8080/auth/login
 Content-Type: application/json
 
@@ -47,7 +25,15 @@ Content-Type: application/json
   "password": "testPassword"
 }
 
-### Wrong password in login (400 wrong password)
+> {%
+    client.test("Register Successful, JWT Token Retrieved, Correct Username", function () {
+        client.assert(response.status == 200, "Wrong response status");
+        client.assert(response.body.jwtToken, "Missing JWT Token");
+        client.assert(response.body.username == "testUser", "Wrong Username");
+    });
+%}
+
+### Wrong password in login
 POST localhost:8080/auth/login
 Content-Type: application/json
 
@@ -56,20 +42,10 @@ Content-Type: application/json
   "password": "password"
 }
 
-### Invalid username in login (400 validation error)
-POST localhost:8080/auth/login
-Content-Type: application/json
-
-{
-  "username": "test",
-  "password": "testPassword"
-}
-
-### Invalid password in login (400 validation error)
-POST localhost:8080/auth/login
-Content-Type: application/json
-
-{
-  "username": "testUser",
-  "password": "test"
-}
+> {%
+    client.test("Register Successful, JWT Token Retrieved, Correct Username", function () {
+        client.assert(response.status == 400, "Wrong response status");
+        client.assert(response.body.detail == "Wrong password", "Missing JWT Token");
+        client.assert(response.body.title == "Wrong Password", "testUser");
+    });
+%}

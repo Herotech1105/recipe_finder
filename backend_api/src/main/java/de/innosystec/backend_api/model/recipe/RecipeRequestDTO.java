@@ -1,5 +1,6 @@
 package de.innosystec.backend_api.model.recipe;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
 
 import java.util.Map;
@@ -12,6 +13,7 @@ public record RecipeRequestDTO(
         String preparation,
 
         @Size(min = 3, max = 50)
+        @Valid
         Map<Ingredient, Amount> ingredients
 ) {
 }

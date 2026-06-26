@@ -4,19 +4,16 @@ import de.innosystec.backend_api.model.authentication.RegistrationDTO;
 import de.innosystec.backend_api.service.AuthenticationService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 
 @Configuration
-@PropertySource("classpath:application.properties")
-@ConfigurationProperties(prefix = "security.seeder")
 public class DataSeeder {
 
-    @Value("admin-password")
+    @Value("${data.seeder.admin-password}")
     private String adminPassword;
-    @Value("demo-password")
+
+    @Value("${data.seeder.demo-password}")
     private String demoPassword;
 
     @Bean

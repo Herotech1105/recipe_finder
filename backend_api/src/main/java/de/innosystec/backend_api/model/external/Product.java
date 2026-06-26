@@ -6,6 +6,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties
 public record Product(
         @JsonProperty("product_name") String productName,
-        @JsonProperty("nutriments") Nutrients nutrients
+        @JsonProperty("nutriments") Nutriments nutriments
 ) {
 }

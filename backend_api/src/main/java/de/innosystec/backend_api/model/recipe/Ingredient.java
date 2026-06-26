@@ -13,11 +13,14 @@ public class Ingredient {
     @Size(min = 1, max = 30)
     private String name;
 
+    private double kcalPer100g;
+
     protected Ingredient() {
     }
 
-    public Ingredient(String name) {
+    public Ingredient(String name, double kcalPer100g) {
         this.name = name;
+        this.kcalPer100g = kcalPer100g;
     }
 
     public String getName() {
@@ -41,6 +44,10 @@ public class Ingredient {
         Ingredient otherIngredient = (Ingredient) other;
         if (this.id == null || otherIngredient.id == null) return false;
         return otherIngredient.id.equals(this.id);
+    }
+
+    public IngredientResponseDTO toIngredientResponseDTO() {
+        return new IngredientResponseDTO(name, kcalPer100g);
     }
 
 }

@@ -5,9 +5,11 @@ import de.innosystec.backend_api.exception.authentication.UnauthorizedException;
 import de.innosystec.backend_api.exception.recipe.RecipeNotFoundException;
 import de.innosystec.backend_api.model.authentication.Authentication;
 import de.innosystec.backend_api.model.recipe.*;
+import de.innosystec.backend_api.model.storage.UserStorageItem;
 import de.innosystec.backend_api.repository.AuthenticationRepository;
 import de.innosystec.backend_api.repository.IngredientRepository;
 import de.innosystec.backend_api.repository.RecipeRepository;
+import de.innosystec.backend_api.util.IngredientValidationUtil;
 import de.innosystec.backend_api.util.JWTUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,9 +18,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -38,6 +38,9 @@ class RecipeServiceTest {
     @Mock
     private JWTUtil jwtUtil;
 
+    @Mock
+    private IngredientValidationUtil ingredientValidationUtil;
+
     @InjectMocks
     private RecipeService recipeService;
 
@@ -49,7 +52,6 @@ class RecipeServiceTest {
     @BeforeEach
     void setUp() {
         mockUser = mock(Authentication.class);
-
         mockRecipe = mock(Recipe.class);
     }
 
@@ -93,6 +95,52 @@ class RecipeServiceTest {
         assertEquals(listItemDTO, result.getFirst());
     }
 
+    // --- GET INGREDIENT NUTRITION BY RECIPE ID TESTS ---
+
+    @Test
+    void getIngredientNutritionByRecipeId_Success() {
+        Long recipeId = 1L;
+        List<IngredientResponseDTO> expectedNutrition = List.of(mock(IngredientResponseDTO.class));
+
+        when(recipeRepository.findById(recipeId)).thenReturn(Optional.of(mockRecipe));
+        when(mockRecipe.getIngredientNutrition()).thenReturn(expectedNutrition);
+
+        List<IngredientResponseDTO> result = recipeService.getIngredientNutritionByRecipeId(recipeId);
+
+        assertEquals(expectedNutrition, result);
+    }
+
+    // --- GET RECIPES WITH AT MOST TWO MISSING INGREDIENTS TESTS ---
+
+    @Test
+    void getRecipesWithAtMostTwoMissingIngredients_Success() {
+        when(jwtUtil.getUsernameFromToken(testJwt)).thenReturn(username);
+        when(authenticationRepository.findByUsername(username)).thenReturn(Optional.of(mockUser));
+
+        Ingredient ingredient1 = mock(Ingredient.class);
+        Ingredient ingredient2 = mock(Ingredient.class);
+        Ingredient ingredient3 = mock(Ingredient.class);
+
+        UserStorageItem storageItem = mock(UserStorageItem.class);
+        when(storageItem.getIngredient()).thenReturn(ingredient1);
+        when(mockUser.getStorageItems()).thenReturn(List.of(storageItem));
+
+        Map<Ingredient, Amount> recipeIngredients = new LinkedHashMap<>();
+        recipeIngredients.put(ingredient1, mock(Amount.class));
+        recipeIngredients.put(ingredient2, mock(Amount.class));
+        recipeIngredients.put(ingredient3, mock(Amount.class));
+
+        when(mockRecipe.getIngredients()).thenReturn(recipeIngredients);
+        RecipeListItemDTO listItemDTO = mock(RecipeListItemDTO.class);
+        when(mockRecipe.toRecipeListItemDTO()).thenReturn(listItemDTO);
+        when(recipeRepository.findAll()).thenReturn(List.of(mockRecipe));
+
+        List<RecipeListItemDTO> result = recipeService.getRecipesWithAtMostTwoMissingIngredients(testJwt);
+
+        assertEquals(1, result.size());
+        assertEquals(listItemDTO, result.getFirst());
+    }
+
     // --- CREATE RECIPE TESTS ---
 
     @Test
@@ -115,6 +163,40 @@ class RecipeServiceTest {
         when(authenticationRepository.findByUsername(username)).thenReturn(Optional.empty());
 
         assertThrows(AuthenticationNotFoundException.class, () -> recipeService.createRecipe(requestDTO, testJwt));
+    }
+
+    // --- UPDATE RECIPE TESTS ---
+
+    @Test
+    void updateRecipe_Success() {
+        Long recipeId = 1L;
+        RecipeRequestDTO requestDTO = new RecipeRequestDTO("Updated Title", "Updated Steps", Collections.emptyMap());
+
+        when(jwtUtil.getUsernameFromToken(testJwt)).thenReturn(username);
+        when(authenticationRepository.findByUsername(username)).thenReturn(Optional.of(mockUser));
+        when(recipeRepository.findById(recipeId)).thenReturn(Optional.of(mockRecipe));
+        when(mockRecipe.getAuthentication()).thenReturn(mockUser);
+
+        recipeService.updateRecipe(recipeId, requestDTO, testJwt);
+
+        verify(mockRecipe).setTitle("Updated Title");
+        verify(mockRecipe).setPreparation("Updated Steps");
+        verify(recipeRepository).save(mockRecipe);
+    }
+
+    @Test
+    void updateRecipe_ThrowsUnauthorizedException() {
+        Long recipeId = 1L;
+        RecipeRequestDTO requestDTO = new RecipeRequestDTO("Updated Title", "Updated Steps", Collections.emptyMap());
+        Authentication differentUser = mock(Authentication.class);
+
+        when(jwtUtil.getUsernameFromToken(testJwt)).thenReturn(username);
+        when(authenticationRepository.findByUsername(username)).thenReturn(Optional.of(mockUser));
+        when(recipeRepository.findById(recipeId)).thenReturn(Optional.of(mockRecipe));
+        when(mockRecipe.getAuthentication()).thenReturn(differentUser);
+
+        assertThrows(UnauthorizedException.class, () -> recipeService.updateRecipe(recipeId, requestDTO, testJwt));
+        verify(recipeRepository, never()).save(any());
     }
 
     // --- DELETE RECIPE TESTS ---

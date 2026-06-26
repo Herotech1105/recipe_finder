@@ -6,6 +6,8 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 @Entity
@@ -95,6 +97,12 @@ public class Recipe {
                 authentication.getUsername(),
                 "image" + id.toString() + ".recipe.jpeg"
         );
+    }
+
+    public List<IngredientResponseDTO> getIngredientNutrition() {
+        List<IngredientResponseDTO> list = new LinkedList<>();
+        ingredients.forEach((ingredient, amount) -> list.add(ingredient.toIngredientResponseDTO()));
+        return list;
     }
 
 

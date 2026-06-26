@@ -41,15 +41,15 @@ Authorization: Bearer {{authToken}}
   "title": "testRecipe",
   "preparation": "How to prepare a test recipe",
   "ingredients": {
-    "ingredientTwo": {
+    "flour": {
       "unit": "g",
       "amount": 500
     },
-    "ingredientOne": {
+    "milk": {
       "unit": "ml",
       "amount": 250
     },
-    "ingredientThree": {
+    "egg": {
       "unit": "Stck",
       "amount": 2
     }
@@ -85,7 +85,7 @@ Authorization: Bearer {{authToken}}
         client.assert(response.status == 200, "Wrong response status");
         client.assert(response.body.title == "testRecipe", "Wrong title");
         client.assert(response.body.preparation == "How to prepare a test recipe", "Wrong preparation");
-        client.assert(response.body.ingredients.ingredientOne.unit == "ml", "Wrong ingredients");
+        client.assert(response.body.ingredients.flour.unit == "g", "Wrong ingredients");
     });
 %}
 
@@ -99,7 +99,7 @@ Authorization: Bearer {{wrongAuthToken}}
         client.assert(response.status == 200, "Wrong response status");
         client.assert(response.body.title == "testRecipe", "Wrong title");
         client.assert(response.body.preparation == "How to prepare a test recipe", "Wrong preparation");
-        client.assert(response.body.ingredients.ingredientOne.unit == "ml", "Wrong ingredients");
+        client.assert(response.body.ingredients.flour.unit == "g", "Wrong ingredients");
     });
 %}
 
@@ -142,15 +142,15 @@ Authorization: Bearer {{authToken}}
   "title": "testRecipe",
   "preparation": "How to prepare a test recipe",
   "ingredients": {
-    "ingredientTwo": {
+    "flour": {
       "unit": "g",
       "amount": 500
     },
-    "ingredientOne": {
+    "wheat": {
       "unit": "g",
       "amount": 250
     },
-    "ingredientThree": {
+    "milk": {
       "unit": "Stck",
       "amount": 2
     }
@@ -174,7 +174,7 @@ Authorization: Bearer {{wrongAuthToken}}
     });
 %}
 
-### Get recipe by Id as non-Owner
+### Delete recipe by Id as non-Owner
 DELETE localhost:8080/recipes/{{createdId}}
 Content-Type: application/json
 Authorization: Bearer {{authToken}}

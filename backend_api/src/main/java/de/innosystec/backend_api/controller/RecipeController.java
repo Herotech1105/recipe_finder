@@ -32,6 +32,11 @@ public class RecipeController {
         return service.getIngredientNutritionByRecipeId(id);
     }
 
+    @GetMapping
+    public List<RecipeListItemDTO> getRecipesWithAtMostTwoMissingIngredients(@RequestHeader("Authorization") String jwtToken) {
+        return service.getRecipesWithAtMostTwoMissingIngredients(jwtToken.substring(7));
+    }
+
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public void createRecipe(@RequestBody @Valid RecipeRequestDTO recipeRequest,

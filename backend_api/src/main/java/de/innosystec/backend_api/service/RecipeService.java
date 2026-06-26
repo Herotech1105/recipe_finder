@@ -5,6 +5,7 @@ import de.innosystec.backend_api.exception.authentication.UnauthorizedException;
 import de.innosystec.backend_api.exception.recipe.RecipeNotFoundException;
 import de.innosystec.backend_api.model.authentication.Authentication;
 import de.innosystec.backend_api.model.recipe.*;
+import de.innosystec.backend_api.model.storage.UserStorageItem;
 import de.innosystec.backend_api.repository.AuthenticationRepository;
 import de.innosystec.backend_api.repository.IngredientRepository;
 import de.innosystec.backend_api.repository.RecipeRepository;
@@ -52,6 +53,32 @@ public class RecipeService {
 
     public List<IngredientResponseDTO> getIngredientNutritionByRecipeId(Long id) {
         return findRecipeById(id).getIngredientNutrition();
+    }
+
+    public List<RecipeListItemDTO> getRecipesWithAtMostTwoMissingIngredients(String jwtToken) {
+        String username = jwtUtil.getUsernameFromToken(jwtToken);
+        Authentication userAuthentication = findAuthenticationByUsername(username);
+
+        java.util.Set<Ingredient> ownedIngredients = userAuthentication.getStorageItems().stream()
+                .map(UserStorageItem::getIngredient)
+                .collect(java.util.stream.Collectors.toSet());
+
+        List<RecipeListItemDTO> manageableRecipes = new LinkedList<>();
+
+        recipeRepository.findAll().forEach(recipe -> {
+            java.util.Set<Ingredient> recipeIngredients = recipe.getIngredients().keySet();
+
+
+            long missingCount = recipeIngredients.stream()
+                    .filter(ingredient -> !ownedIngredients.contains(ingredient))
+                    .count();
+
+            if (missingCount <= 2) {
+                manageableRecipes.add(recipe.toRecipeListItemDTO());
+            }
+        });
+
+        return manageableRecipes;
     }
 
     public void createRecipe(@Valid RecipeRequestDTO requestDTO,

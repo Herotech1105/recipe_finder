@@ -32,7 +32,7 @@ public class RecipeController {
         return service.getIngredientNutritionByRecipeId(id);
     }
 
-    @GetMapping
+    @GetMapping("/find")
     public List<RecipeListItemDTO> getRecipesWithAtMostTwoMissingIngredients(@RequestHeader("Authorization") String jwtToken) {
         return service.getRecipesWithAtMostTwoMissingIngredients(jwtToken.substring(7));
     }

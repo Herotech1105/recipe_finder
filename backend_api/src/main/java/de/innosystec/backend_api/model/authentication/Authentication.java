@@ -1,7 +1,10 @@
 package de.innosystec.backend_api.model.authentication;
 
 
+import de.innosystec.backend_api.model.recipe.Amount;
+import de.innosystec.backend_api.model.recipe.Ingredient;
 import de.innosystec.backend_api.model.recipe.Recipe;
+import de.innosystec.backend_api.model.storage.UserStorageItem;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
@@ -29,6 +32,12 @@ public class Authentication {
             orphanRemoval = true,
             fetch = FetchType.LAZY)
     private List<Recipe> recipes;
+
+    @OneToMany(mappedBy = "authentication",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY)
+    private List<UserStorageItem> storageItems;
 
     protected Authentication() {
     }
@@ -73,5 +82,18 @@ public class Authentication {
         if (other == null || getClass() != other.getClass()) return false;
         Authentication otherAuthentication = (Authentication) other;
         return otherAuthentication.id.equals(this.id);
+    }
+
+    public List<UserStorageItem> getStorageItems() {
+        return storageItems;
+    }
+
+    public void addIngredientToStorage(Ingredient ingredient, Amount amount) {
+        UserStorageItem item = new UserStorageItem(this, ingredient, amount);
+        this.storageItems.add(item);
+    }
+
+    public void removeIngredientFromStorage(Ingredient ingredient) {
+        this.storageItems.removeIf(item -> item.getIngredient().equals(ingredient));
     }
 }

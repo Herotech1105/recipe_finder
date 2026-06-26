@@ -1,6 +1,7 @@
 import './App.css';
 import AuthPage from "./pages/AuthPage.tsx";
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
+import Dashboard from "./pages/Dashboard.tsx";
 
 function App() {
     const [authTrigger, setAuthTrigger] = useState(0);
@@ -14,21 +15,20 @@ function App() {
     return (
         <>
             {jwt ? (
-                <div style={{ padding: '20px', textAlign: 'center' }}>
-                    <h1>Welcome Back! 🎉</h1>
-                    <p>You are successfully authenticated.</p>
+                <>
+                    <Dashboard></Dashboard>
                     <button
                         onClick={() => {
                             localStorage.removeItem('token');
                             setAuthTrigger(prev => prev + 1);
                         }}
-                        style={{ padding: '10px 20px', cursor: 'pointer', marginTop: '10px' }}
+                        style={{padding: '10px 20px', cursor: 'pointer', marginTop: '10px'}}
                     >
                         Log Out
                     </button>
-                </div>
+                </>
             ) : (
-                <AuthPage setAuthTrigger={setAuthTrigger} />
+                <AuthPage setAuthTrigger={setAuthTrigger}/>
             )}
         </>
     );

@@ -1,8 +1,6 @@
 package de.innosystec.backend_api.controller;
 
-import de.innosystec.backend_api.model.recipe.RecipeDetailDTO;
-import de.innosystec.backend_api.model.recipe.RecipeListItemDTO;
-import de.innosystec.backend_api.model.recipe.RecipeRequestDTO;
+import de.innosystec.backend_api.model.recipe.*;
 import de.innosystec.backend_api.service.RecipeService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -27,6 +25,11 @@ public class RecipeController {
     @GetMapping
     public List<RecipeListItemDTO> getRecipeOverviewList() {
         return service.getALlRecipes();
+    }
+
+    @GetMapping("/{id}/nutrition")
+    public List<IngredientResponseDTO> getRecipeIngredientNutritionById(@PathVariable Long id) {
+        return service.getIngredientNutritionByRecipeId(id);
     }
 
     @ResponseStatus(HttpStatus.CREATED)

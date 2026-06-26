@@ -50,6 +50,10 @@ public class RecipeService {
         return dtoList;
     }
 
+    public List<IngredientResponseDTO> getIngredientNutritionByRecipeId(Long id) {
+        return findRecipeById(id).getIngredientNutrition();
+    }
+
     public void createRecipe(@Valid RecipeRequestDTO requestDTO,
                              String jwtToken) {
         String username = jwtUtil.getUsernameFromToken(jwtToken);

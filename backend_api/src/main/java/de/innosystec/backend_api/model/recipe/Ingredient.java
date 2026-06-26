@@ -46,4 +46,8 @@ public class Ingredient {
         return otherIngredient.id.equals(this.id);
     }
 
+    public IngredientResponseDTO toIngredientResponseDTO() {
+        return new IngredientResponseDTO(name, kcalPer100g);
+    }
+
 }

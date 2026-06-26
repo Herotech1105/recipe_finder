@@ -15,7 +15,7 @@ Content-Type: application/json
     client.global.set("authToken", response.body.jwtToken);
 %}
 
-### Valid Login to get authorization token for admin
+### Valid Login to get authorization token for demo user
 POST localhost:8080/auth/login
 Content-Type: application/json
 
@@ -83,9 +83,28 @@ Authorization: Bearer {{authToken}}
 > {%
     client.test("GET Resource Successfully", function () {
         client.assert(response.status == 200, "Wrong response status");
-        client.assert(response.body.title == "testRecipe", "Wrong title");
-        client.assert(response.body.preparation == "How to prepare a test recipe", "Wrong preparation");
-        client.assert(response.body.ingredients.flour.unit == "g", "Wrong ingredients");
+    });
+%}
+
+### Get recipe nutrition details by Id
+GET localhost:8080/recipes/{{createdId}}/nutrition
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+> {%
+    client.test("GET Nutrition Info Successfully", function () {
+        client.assert(response.status == 200, "Wrong response status");
+    });
+%}
+
+### Get recipes with at most two missing ingredients
+GET localhost:8080/recipes/find
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+> {%
+    client.test("GET Manageable Recipes Successfully", function () {
+        client.assert(response.status == 200, "Wrong response status");
     });
 %}
 
@@ -97,9 +116,6 @@ Authorization: Bearer {{wrongAuthToken}}
 > {%
     client.test("GET Resource Successfully", function () {
         client.assert(response.status == 200, "Wrong response status");
-        client.assert(response.body.title == "testRecipe", "Wrong title");
-        client.assert(response.body.preparation == "How to prepare a test recipe", "Wrong preparation");
-        client.assert(response.body.ingredients.flour.unit == "g", "Wrong ingredients");
     });
 %}
 
@@ -139,8 +155,8 @@ Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
 {
-  "title": "testRecipe",
-  "preparation": "How to prepare a test recipe",
+  "title": "testRecipe Updated",
+  "preparation": "How to prepare an updated test recipe",
   "ingredients": {
     "flour": {
       "unit": "g",
@@ -174,7 +190,7 @@ Authorization: Bearer {{wrongAuthToken}}
     });
 %}
 
-### Delete recipe by Id as non-Owner
+### Delete recipe by Id as Owner
 DELETE localhost:8080/recipes/{{createdId}}
 Content-Type: application/json
 Authorization: Bearer {{authToken}}

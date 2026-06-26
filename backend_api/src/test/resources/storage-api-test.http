@@ -1,0 +1,162 @@
+### Valid Login to get authorization token for the user
+POST localhost:8080/auth/login
+Content-Type: application/json
+
+{
+  "username": "demoUser",
+  "password": "demo-password"
+}
+
+> {%
+    client.test("Login Successful And JWT Token Retrieved", function () {
+        client.assert(response.status == 200, "Wrong response status");
+        client.assert(response.body.jwtToken, "Missing JWT Token");
+    });
+    client.global.set("authToken", response.body.jwtToken);
+%}
+
+### Add an ingredient to storage
+PUT localhost:8080/api/storage/ingredients/flour
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "unit": "g",
+  "amount": 1000.0
+}
+
+> {%
+    client.test("Ingredient Added Successfully", function () {
+        client.assert(response.status == 204, "Wrong response status");
+    });
+%}
+
+### Update an ingredient in storage
+PUT localhost:8080/api/storage/ingredients/flour
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "unit": "g",
+  "amount": 5000.0
+}
+
+> {%
+    client.test("Ingredient Updated Successfully", function () {
+        client.assert(response.status == 204, "Wrong response status");
+    });
+%}
+
+### Get all ingredients currently in storage
+GET localhost:8080/api/storage/ingredients
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+> {%
+    client.test("GET Storage Items Successfully", function () {
+        client.assert(response.status == 200, "Wrong response status");
+        client.assert(response.body[0].ingredientName=="flour", "Storage should contain flour")
+        client.assert(response.body[0].amount==5000.0, "Storage should contain 5000.0 g flour")
+    });
+%}
+
+### Successful Recipe Creation
+POST localhost:8080/recipes
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "title": "testRecipe",
+  "preparation": "How to prepare a test recipe",
+  "ingredients": {
+    "flour": {
+      "unit": "g",
+      "amount": 500
+    },
+    "milk": {
+      "unit": "ml",
+      "amount": 250
+    },
+    "egg": {
+      "unit": "Stck",
+      "amount": 2
+    }
+  }
+}
+
+> {%
+    client.test("Resource Created Successfully", function () {
+        client.assert(response.status == 201, "Wrong response status");
+    });
+%}
+
+### Get all recipes
+GET localhost:8080/recipes
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+> {%
+    client.test("GET Resources Successfully", function () {
+        client.assert(response.status == 200, "Wrong response status");
+        client.assert(response.body[response.body.length - 1].id, "No id in body")
+    });
+    client.global.set("createdId", response.body[response.body.length - 1].id);
+%}
+
+### Consume ingredients based on a recipe (using default multiplier)
+POST localhost:8080/api/storage/consume-recipe/{{createdId}}
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+> {%
+    client.test("Recipe Ingredients Consumed Successfully", function () {
+        client.assert(response.status == 200, "Wrong response status");
+    });
+%}
+
+### Consume ingredients based on a recipe with a custom multiplier
+POST localhost:8080/api/storage/consume-recipe/{{createdId}}?multiplier=2.5
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+> {%
+    client.test("Recipe Ingredients Consumed with Multiplier Successfully", function () {
+        client.assert(response.status == 200, "Wrong response status");
+    });
+%}
+
+### Try to consume recipe with an invalid multiplier
+POST localhost:8080/api/storage/consume-recipe/1?multiplier=25.0
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+> {%
+    client.test("Fail To Consume Due To Invalid Multiplier", function () {
+        client.assert(response.status == 400, "Wrong response status");
+    });
+%}
+
+### Get all ingredients left in storage
+GET localhost:8080/api/storage/ingredients
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+> {%
+    client.test("GET Storage Items Successfully", function () {
+        client.assert(response.status == 200, "Wrong response status");
+        client.assert(response.body[0].ingredientName=="flour", "Storage should contain flour")
+        client.assert(response.body[0].amount==3250.0, "Storage should contain 3250.0 g flour")
+    });
+%}
+
+### Remove an ingredient from storage
+DELETE localhost:8080/api/storage/ingredients/flour
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+> {%
+    client.test("Ingredient Removed Successfully", function () {
+        client.assert(response.status == 204, "Wrong response status");
+    });
+%}
+

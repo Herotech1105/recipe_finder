@@ -54,7 +54,6 @@ const AuthPage = (props: Props) => {
             }
 
             if (data.jwtToken) {
-                console.log(data)
                 localStorage.setItem('token', data.token);
 
                 setAuthTrigger(prev => prev + 1);
@@ -86,17 +85,6 @@ const AuthPage = (props: Props) => {
                 <form onSubmit={handleSubmit} style={styles.form}>
                     {!isLogin && (
                         <>
-                            <div style={styles.inputGroup}>
-                                <label style={styles.label}>Full Name</label>
-                                <input
-                                    type="text"
-                                    name="fullName"
-                                    value={formData.fullName}
-                                    onChange={handleChange}
-                                    style={styles.input}
-                                    required
-                                />
-                            </div>
                             <div style={styles.inputGroup}>
                                 <label style={styles.label}>Email</label>
                                 <input

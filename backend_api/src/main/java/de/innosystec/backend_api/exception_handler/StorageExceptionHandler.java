@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class StorageExceptionHandler {
     @ExceptionHandler(InvalidMultiplierException.class)
-    public ProblemDetail handleOpenFoodFactsNotAvailable(InvalidMultiplierException exception) {
+    public ProblemDetail handleInvalidMultiplier(InvalidMultiplierException exception) {
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(
                 HttpStatus.BAD_REQUEST, exception.getMessage()
         );

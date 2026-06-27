@@ -130,8 +130,7 @@ public class RecipeService {
     private Map<Ingredient, Amount> mapIngredientsFromDTO(RecipeRequestDTO requestDTO) {
         Map<Ingredient, Amount> ingredients = new HashMap<>();
         requestDTO.ingredients().forEach(
-                (ingredientRequestDTO, amount) -> {
-                    String ingredientName = ingredientRequestDTO.name();
+                (ingredientName, amount) -> {
                     Ingredient ingredient = ingredientRepository.findByName(ingredientName)
                             .orElseGet(() -> {
                                 double kcalPer100g = ingredientValidationUtil

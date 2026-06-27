@@ -1,37 +1,43 @@
-import type {RecipeListItemDTO, RecipeDetailDTO, IngredientResponseDTO, RecipeRequestDTO} from '../dtos/types.ts';
+import type { RecipeListItemDTO, RecipeDetailDTO, IngredientResponseDTO, RecipeRequestDTO } from '../dtos/types.ts';
 
 const BASE_URL = '/api/recipes';
 
 const getHeaders = (): HeadersInit => {
-    const token = localStorage.getItem('token')
-    return ({
+    const token = localStorage.getItem('token');
+    return {
         'Content-Type': 'application/json',
-        ...(token ? {'Authorization': `Bearer ${token}`} : {})
-    })
+        ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+    };
 };
 
 export const recipeService = {
     getAllRecipes: async (): Promise<RecipeListItemDTO[]> => {
         const res = await fetch(BASE_URL, { headers: getHeaders() });
-        return res.json();
+        return res.json() as Promise<RecipeListItemDTO[]>;
     },
 
     getRecipeById: async (id: number): Promise<RecipeDetailDTO> => {
         const res = await fetch(`${BASE_URL}/${id}`, { headers: getHeaders() });
-        return res.json();
+        return res.json() as Promise<RecipeDetailDTO>;
     },
 
     getNutritionById: async (id: number): Promise<IngredientResponseDTO[]> => {
         const res = await fetch(`${BASE_URL}/${id}/nutrition`, { headers: getHeaders() });
-        return res.json();
+        return res.json() as Promise<IngredientResponseDTO[]>;
     },
 
-    findRecipesByIngredients: async (): Promise<RecipeListItemDTO[]> => {
-        const res = await fetch(`${BASE_URL}/find`, { headers: getHeaders() });
-        return res.json();
+    // Added the ingredients parameter to make the function useful,
+    // and cast the return type properly.
+    findRecipesByIngredients: async (ingredients: string[]): Promise<RecipeListItemDTO[]> => {
+        // Adjust this fetch call if your backend requires a POST request instead of query params!
+        const query = new URLSearchParams({ ingredients: ingredients.join(',') }).toString();
+        const res = await fetch(`${BASE_URL}/find?${query}`, { headers: getHeaders() });
+        return res.json() as Promise<RecipeListItemDTO[]>;
     },
 
-    createRecipe: async (recipeData: RecipeRequestDTO, ): Promise<void> => {
+    // Fixed: Removed the trailing comma after recipeData
+    createRecipe: async (recipeData: RecipeRequestDTO): Promise<void> => {
+        console.log(JSON.stringify(recipeData));
         await fetch(BASE_URL, {
             method: 'POST',
             headers: getHeaders(),

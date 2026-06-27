@@ -1,6 +1,6 @@
-import React, {useState, useEffect, type CSSProperties, type FormEvent} from 'react';
-import {recipeService} from './RecipeService';
-import type {IngredientRow, Amount, Unit, RecipeRequestDTO} from '../dtos/types';
+import React, { useState, useEffect, type CSSProperties, type FormEvent } from 'react';
+import { recipeService } from '../service/RecipeService.ts';
+import type { Unit, RecipeRequestDTO, Ingredients } from '../dtos/types';
 
 interface RecipeFormProps {
     token: string;
@@ -9,10 +9,17 @@ interface RecipeFormProps {
     onCancel: () => void;
 }
 
-export default function RecipeForm({recipeId, onSave, onCancel}: RecipeFormProps): React.JSX.Element {
+// Fixed: Defined the missing internal state structure for the form rows
+interface IngredientRow {
+    name: string;
+    unit: Unit;
+    amount: number;
+}
+
+export default function RecipeForm({ recipeId, onSave, onCancel }: RecipeFormProps): React.JSX.Element {
     const [title, setTitle] = useState<string>('');
     const [preparation, setPreparation] = useState<string>('');
-    const [ingredientRows, setIngredientRows] = useState<IngredientRow[]>([{name: '', unit: 'GRAM', amount: 0}]);
+    const [ingredientRows, setIngredientRows] = useState<IngredientRow[]>([{ name: '', unit: 'g', amount: 0 }]);
 
     useEffect(() => {
         if (recipeId) {
@@ -21,7 +28,9 @@ export default function RecipeForm({recipeId, onSave, onCancel}: RecipeFormProps
                 setPreparation(data.preparation);
                 if (data.ingredients) {
                     setIngredientRows(Object.entries(data.ingredients).map(([name, amt]) => ({
-                        name, unit: amt.unit, amount: amt.amount
+                        name,
+                        unit: amt.unit,
+                        amount: amt.amount
                     })));
                 }
             });
@@ -30,7 +39,6 @@ export default function RecipeForm({recipeId, onSave, onCancel}: RecipeFormProps
 
     const handleIngredientChange = (index: number, field: keyof IngredientRow, val: string | number): void => {
         const updated = [...ingredientRows];
-        // TypeScript type-safety narrowing safety assignment
         if (field === 'amount') {
             updated[index][field] = Number(val);
         } else if (field === 'unit') {
@@ -43,16 +51,21 @@ export default function RecipeForm({recipeId, onSave, onCancel}: RecipeFormProps
 
     const handleSubmit = async (e: FormEvent): Promise<void> => {
         e.preventDefault();
-        const ingredientsMap: Record<string, Amount> = {};
+
+        // Fixed: Initialized the object structure to match the exact Ingredients type structure
+        const ingredientsMap: Ingredients = {};
 
         ingredientRows.forEach(row => {
             if (row.name) {
-                const key = JSON.stringify({name: row.name});
-                ingredientsMap[key] = {unit: row.unit, amount: row.amount};
+                // Fixed: The key must be just the ingredient name string, not JSON stringified
+                ingredientsMap[row.name] = {
+                    unit: row.unit,
+                    amount: row.amount
+                };
             }
         });
 
-        const payload: RecipeRequestDTO = {title, preparation, ingredients: ingredientsMap};
+        const payload: RecipeRequestDTO = { title, preparation, ingredients: ingredientsMap };
         try {
             if (recipeId) {
                 await recipeService.updateRecipe(recipeId, payload);
@@ -74,7 +87,7 @@ export default function RecipeForm({recipeId, onSave, onCancel}: RecipeFormProps
             borderRadius: '12px',
             border: '1px solid #e2e8f0'
         } as CSSProperties,
-        group: {marginBottom: '16px'} as CSSProperties,
+        group: { marginBottom: '16px' } as CSSProperties,
         label: {
             display: 'block',
             fontSize: '12px',
@@ -90,7 +103,7 @@ export default function RecipeForm({recipeId, onSave, onCancel}: RecipeFormProps
             borderRadius: '6px',
             boxSizing: 'border-box'
         } as CSSProperties,
-        row: {display: 'flex', gap: '8px', marginBottom: '8px', alignItems: 'center'} as CSSProperties,
+        row: { display: 'flex', gap: '8px', marginBottom: '8px', alignItems: 'center' } as CSSProperties,
         addBtn: {
             background: 'none',
             border: 'none',
@@ -99,7 +112,7 @@ export default function RecipeForm({recipeId, onSave, onCancel}: RecipeFormProps
             fontWeight: 'bold',
             fontSize: '13px'
         } as CSSProperties,
-        footer: {marginTop: '24px', display: 'flex', justifyContent: 'flex-end', gap: '12px'} as CSSProperties,
+        footer: { marginTop: '24px', display: 'flex', justifyContent: 'flex-end', gap: '12px' } as CSSProperties,
         submit: {
             padding: '10px 16px',
             backgroundColor: '#059669',
@@ -119,10 +132,9 @@ export default function RecipeForm({recipeId, onSave, onCancel}: RecipeFormProps
 
     return (
         <form onSubmit={handleSubmit} style={styles.form}>
-            <h2 style={{
-                margin: '0 0 24px 0',
-                color: '#0f172a'
-            }}>{recipeId ? 'Edit Recipe Configuration' : 'Add New Recipe'}</h2>
+            <h2 style={{ margin: '0 0 24px 0', color: '#0f172a' }}>
+                {recipeId ? 'Edit Recipe Configuration' : 'Add New Recipe'}
+            </h2>
 
             <div style={styles.group}>
                 <label style={styles.label}>Title</label>
@@ -137,11 +149,11 @@ export default function RecipeForm({recipeId, onSave, onCancel}: RecipeFormProps
             </div>
 
             <div style={styles.group}>
-                <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '8px'}}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
                     <label style={styles.label}>Ingredients</label>
                     <button type="button" style={styles.addBtn} onClick={() => setIngredientRows([...ingredientRows, {
                         name: '',
-                        unit: 'GRAM',
+                        unit: 'g',
                         amount: 0
                     }])}>＋ Add
                     </button>
@@ -151,18 +163,20 @@ export default function RecipeForm({recipeId, onSave, onCancel}: RecipeFormProps
                     <div key={i} style={styles.row}>
                         <input type="text" placeholder="Name" value={row.name}
                                onChange={e => handleIngredientChange(i, 'name', e.target.value)}
-                               style={{...styles.input, flex: 2}} required/>
+                               style={{ ...styles.input, flex: 2 }} required/>
                         <input type="number" placeholder="Amt" value={row.amount}
                                onChange={e => handleIngredientChange(i, 'amount', e.target.value)} step="any" min="0.01"
-                               style={{...styles.input, flex: 1}} required/>
+                               style={{ ...styles.input, flex: 1 }} required/>
                         <select value={row.unit} onChange={e => handleIngredientChange(i, 'unit', e.target.value)}
-                                style={{...styles.input, flex: 1, backgroundColor: '#fff'}}>
-                            {(['GRAM', 'KILOGRAM', 'LITER', 'MILLILITER', 'PIECE'] as Unit[]).map(u => <option key={u}
-                                                                                                               value={u}>{u}</option>)}
+                                style={{ ...styles.input, flex: 1, backgroundColor: '#fff' }}>
+                            {/* Fixed typo alignment */}
+                            {(['g', 'ml', 'Stck'] as Unit[]).map(u => (
+                                <option key={u} value={u}>{u}</option>
+                            ))}
                         </select>
                         <button type="button"
                                 onClick={() => setIngredientRows(ingredientRows.filter((_, idx) => idx !== i))}
-                                style={{background: 'none', border: 'none', color: '#dc2626', cursor: 'pointer'}}>❌
+                                style={{ background: 'none', border: 'none', color: '#dc2626', cursor: 'pointer' }}>❌
                         </button>
                     </div>
                 ))}

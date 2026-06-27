@@ -1,4 +1,14 @@
-export type Unit = 'GRAM' | 'KILOGRAM' | 'LITER' | 'MILLILITER' | 'PIECE';
+export type Unit = 'g' | 'ml' | 'Stck';
+
+interface IngredientDetails {
+    unit: string;
+    amount: number;
+}
+
+export interface Ingredients {
+    [ingredientName: string]: IngredientDetails;
+}
+
 
 export interface Amount {
     unit: Unit;
@@ -29,14 +39,8 @@ export interface IngredientResponseDTO {
 export interface RecipeRequestDTO {
     title: string;
     preparation: string;
-    ingredients: Record<string, Amount>; // Map represented by dynamic serialized object payload
-    imageLink?: string;
+    ingredients: Ingredients;
 }
 
-export interface IngredientRow {
-    name: string;
-    unit: Unit;
-    amount: number;
-}
 
 export type DashboardView = 'all' | 'search-missing' | 'detail' | 'create' | 'edit';

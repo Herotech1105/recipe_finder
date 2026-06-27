@@ -1,5 +1,5 @@
 import React, {useState, useEffect, type CSSProperties} from 'react';
-import {recipeService} from './RecipeService.ts';
+import {recipeService} from '../service/RecipeService.ts';
 import type {RecipeDetailDTO, IngredientResponseDTO} from '../dtos/types';
 
 interface RecipeDetailProps {

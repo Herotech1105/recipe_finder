@@ -16,7 +16,7 @@ Content-Type: application/json
 %}
 
 ### Add an ingredient to storage
-PUT localhost:8080/api/storage/ingredients/flour
+PUT localhost:8080/storage/ingredients/flour
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
@@ -32,7 +32,7 @@ Authorization: Bearer {{authToken}}
 %}
 
 ### Update an ingredient in storage
-PUT localhost:8080/api/storage/ingredients/flour
+PUT localhost:8080/storage/ingredients/flour
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
@@ -48,7 +48,7 @@ Authorization: Bearer {{authToken}}
 %}
 
 ### Get all ingredients currently in storage
-GET localhost:8080/api/storage/ingredients
+GET localhost:8080/storage/ingredients
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
@@ -104,7 +104,7 @@ Authorization: Bearer {{authToken}}
 %}
 
 ### Consume ingredients based on a recipe (using default multiplier)
-POST localhost:8080/api/storage/consume-recipe/{{createdId}}
+POST localhost:8080/storage/consume-recipe/{{createdId}}
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
@@ -115,7 +115,7 @@ Authorization: Bearer {{authToken}}
 %}
 
 ### Consume ingredients based on a recipe with a custom multiplier
-POST localhost:8080/api/storage/consume-recipe/{{createdId}}?multiplier=2.5
+POST localhost:8080/storage/consume-recipe/{{createdId}}?multiplier=2.5
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
@@ -126,7 +126,7 @@ Authorization: Bearer {{authToken}}
 %}
 
 ### Try to consume recipe with an invalid multiplier
-POST localhost:8080/api/storage/consume-recipe/1?multiplier=25.0
+POST localhost:8080/storage/consume-recipe/1?multiplier=25.0
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
@@ -137,7 +137,7 @@ Authorization: Bearer {{authToken}}
 %}
 
 ### Get all ingredients left in storage
-GET localhost:8080/api/storage/ingredients
+GET localhost:8080/storage/ingredients
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
@@ -150,7 +150,7 @@ Authorization: Bearer {{authToken}}
 %}
 
 ### Remove an ingredient from storage
-DELETE localhost:8080/api/storage/ingredients/flour
+DELETE localhost:8080/storage/ingredients/flour
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
 

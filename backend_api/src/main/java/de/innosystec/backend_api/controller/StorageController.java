@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/storage")
+@RequestMapping("/storage")
 public class StorageController {
 
     private final StorageService storageService;

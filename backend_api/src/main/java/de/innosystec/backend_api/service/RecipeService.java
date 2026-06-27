@@ -131,13 +131,13 @@ public class RecipeService {
         Map<Ingredient, Amount> ingredients = new HashMap<>();
         requestDTO.ingredients().forEach(
                 (ingredientName, amount) -> {
-                    Ingredient ingredient = ingredientRepository.findByName(ingredientName)
+                    Ingredient ingredient = ingredientRepository.findByName(ingredientName.toLowerCase())
                             .orElseGet(() -> {
                                 double kcalPer100g = ingredientValidationUtil
-                                        .getKcalByIngredientName(ingredientName)
+                                        .getKcalByIngredientName(ingredientName.toLowerCase())
                                         .orElse(0.0);
 
-                                Ingredient newIngredient = new Ingredient(ingredientName, kcalPer100g);
+                                Ingredient newIngredient = new Ingredient(ingredientName.toLowerCase(), kcalPer100g);
                                 return ingredientRepository.save(newIngredient);
                             });
                     ingredients.put(ingredient, amount);

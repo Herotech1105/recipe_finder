@@ -28,7 +28,7 @@ public class Recipe {
             joinColumns = @JoinColumn(name = "recipe_id")
     )
     @MapKeyJoinColumn(name = "ingredient_id")
-    @Size(min = 3, max = 50)
+    @Size(min = 1, max = 50)
     private Map<Ingredient, Amount> ingredients;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

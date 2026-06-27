@@ -42,5 +42,15 @@ export interface RecipeRequestDTO {
     ingredients: Ingredients;
 }
 
+export interface DashboardProps {
+    onLogout: () => void;
+    token: string;
+}
+
+export interface StorageIngredient {
+    ingredientName: string;
+    amount: number;
+    unit: string;
+}
 
 export type DashboardView = 'all' | 'search-missing' | 'detail' | 'create' | 'edit';

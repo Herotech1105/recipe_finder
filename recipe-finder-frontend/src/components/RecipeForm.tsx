@@ -1,6 +1,6 @@
 import React, { useState, useEffect, type CSSProperties, type FormEvent } from 'react';
 import { recipeService } from '../service/RecipeService.ts';
-import type { Unit, RecipeRequestDTO, Ingredients } from '../dtos/types';
+import type { Unit, RecipeRequestDTO, Ingredients } from '../dtos/types.ts';
 
 interface RecipeFormProps {
     token: string;

@@ -12,21 +12,15 @@ function App() {
         setJwt(token);
     }, [authTrigger]);
 
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        setAuthTrigger(prev => prev + 1);
+    };
+
     return (
         <>
             {jwt ? (
-                <>
-                    <Dashboard></Dashboard>
-                    <button
-                        onClick={() => {
-                            localStorage.removeItem('token');
-                            setAuthTrigger(prev => prev + 1);
-                        }}
-                        style={{padding: '10px 20px', cursor: 'pointer', marginTop: '10px'}}
-                    >
-                        Log Out
-                    </button>
-                </>
+                <Dashboard onLogout={handleLogout} />
             ) : (
                 <AuthPage setAuthTrigger={setAuthTrigger}/>
             )}

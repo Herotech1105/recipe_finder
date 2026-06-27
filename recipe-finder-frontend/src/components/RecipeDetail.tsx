@@ -1,6 +1,6 @@
 import React, {useState, useEffect, type CSSProperties} from 'react';
 import {recipeService} from '../service/RecipeService.ts';
-import type {RecipeDetailDTO, IngredientResponseDTO} from '../dtos/types';
+import type {RecipeDetailDTO, IngredientResponseDTO} from '../dtos/types.ts';
 
 interface RecipeDetailProps {
     id: number;

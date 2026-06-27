@@ -1,5 +1,5 @@
 import React, {type CSSProperties } from 'react';
-import type {RecipeListItemDTO} from '../dtos/types';
+import type {RecipeListItemDTO} from '../dtos/types.ts';
 
 interface RecipeListProps {
     recipes: RecipeListItemDTO[];

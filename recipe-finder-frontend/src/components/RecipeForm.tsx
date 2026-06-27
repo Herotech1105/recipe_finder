@@ -13,13 +13,13 @@ interface RecipeFormProps {
 interface IngredientRow {
     name: string;
     unit: Unit;
-    amount: number;
+    amount: number | '';
 }
 
 export default function RecipeForm({recipeId, onSave, onCancel}: RecipeFormProps): React.JSX.Element {
     const [title, setTitle] = useState<string>('');
     const [preparation, setPreparation] = useState<string>('');
-    const [ingredientRows, setIngredientRows] = useState<IngredientRow[]>([{name: '', unit: 'g', amount: 0}]);
+    const [ingredientRows, setIngredientRows] = useState<IngredientRow[]>([{name: '', unit: 'g', amount: ''}]);
 
     useEffect(() => {
         if (recipeId) {
@@ -37,14 +37,14 @@ export default function RecipeForm({recipeId, onSave, onCancel}: RecipeFormProps
         }
     }, [recipeId]);
 
-    const handleIngredientChange = (index: number, field: keyof IngredientRow, val: string | number): void => {
+    const handleIngredientChange = (index: number, field: keyof IngredientRow, val: string): void => {
         const updated = [...ingredientRows];
         if (field === 'amount') {
-            updated[index][field] = Number(val);
+            updated[index][field] = val === '' ? '' : Number(val);
         } else if (field === 'unit') {
             updated[index][field] = val as Unit;
         } else {
-            updated[index][field] = val as string;
+            updated[index][field] = val;
         }
         setIngredientRows(updated);
     };
@@ -58,7 +58,7 @@ export default function RecipeForm({recipeId, onSave, onCancel}: RecipeFormProps
             if (row.name) {
                 ingredientsMap[row.name] = {
                     unit: row.unit,
-                    amount: row.amount
+                    amount: row.amount === '' ? 0 : row.amount
                 };
             }
         });
@@ -91,7 +91,7 @@ export default function RecipeForm({recipeId, onSave, onCancel}: RecipeFormProps
             <div style={recipeFormStyles.group}>
                 <label style={recipeFormStyles.label}>Instructions</label>
                 <textarea rows={4} value={preparation} onChange={e => setPreparation(e.target.value)} maxLength={10000}
-                          style={recipeFormStyles.input}/>
+                          style={recipeFormStyles.input} required minLength={20} />
             </div>
 
             <div style={recipeFormStyles.group}>
@@ -101,7 +101,7 @@ export default function RecipeForm({recipeId, onSave, onCancel}: RecipeFormProps
                             onClick={() => setIngredientRows([...ingredientRows, {
                                 name: '',
                                 unit: 'g',
-                                amount: 0
+                                amount: ''
                             }])}>＋ Add
                     </button>
                 </div>
@@ -116,7 +116,6 @@ export default function RecipeForm({recipeId, onSave, onCancel}: RecipeFormProps
                                style={{...recipeFormStyles.input, flex: 1}} required/>
                         <select value={row.unit} onChange={e => handleIngredientChange(i, 'unit', e.target.value)}
                                 style={{...recipeFormStyles.input, flex: 1, backgroundColor: '#fff'}}>
-                            {/* Fixed typo alignment */}
                             {(['g', 'ml', 'Stck'] as Unit[]).map(u => (
                                 <option key={u} value={u}>{u}</option>
                             ))}

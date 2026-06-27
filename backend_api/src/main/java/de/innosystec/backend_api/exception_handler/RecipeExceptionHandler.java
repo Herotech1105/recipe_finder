@@ -14,7 +14,7 @@ public class RecipeExceptionHandler {
     @ExceptionHandler(RecipeNotFoundException.class)
     public ProblemDetail handleRecipeNotFound(RecipeNotFoundException exception) {
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(
-                HttpStatus.BAD_REQUEST, exception.getMessage()
+                HttpStatus.NOT_FOUND, exception.getMessage()
         );
         problem.setTitle("Recipe not found");
         return problem;

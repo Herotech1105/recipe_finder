@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/recipe-finder-frontend/recipe-finder-frontend.iml" filepath="$PROJECT_DIR$/recipe-finder-frontend/recipe-finder-frontend.iml" />
       <module fileurl="file://$PROJECT_DIR$/recipe_book.iml" filepath="$PROJECT_DIR$/recipe_book.iml" />
     </modules>
   </component>

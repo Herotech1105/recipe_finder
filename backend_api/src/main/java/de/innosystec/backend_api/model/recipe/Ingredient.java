@@ -2,6 +2,7 @@ package de.innosystec.backend_api.model.recipe;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
+import java.util.Objects;
 
 @Entity
 public class Ingredient {
@@ -31,10 +32,9 @@ public class Ingredient {
         this.name = name;
     }
 
-    // Equals and Hashcode for use as map key
     @Override
     public int hashCode() {
-        return getClass().hashCode();
+        return Objects.hash(name != null ? name.toLowerCase() : null);
     }
 
     @Override
@@ -42,12 +42,11 @@ public class Ingredient {
         if (this == other) return true;
         if (other == null || getClass() != other.getClass()) return false;
         Ingredient otherIngredient = (Ingredient) other;
-        if (this.id == null || otherIngredient.id == null) return false;
-        return otherIngredient.id.equals(this.id);
+        if (this.name == null || otherIngredient.name == null) return false;
+        return this.name.equalsIgnoreCase(otherIngredient.name);
     }
 
     public IngredientResponseDTO toIngredientResponseDTO() {
         return new IngredientResponseDTO(name, kcalPer100g);
     }
-
 }

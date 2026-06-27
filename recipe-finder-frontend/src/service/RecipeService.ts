@@ -26,12 +26,8 @@ export const recipeService = {
         return res.json() as Promise<IngredientResponseDTO[]>;
     },
 
-    // Added the ingredients parameter to make the function useful,
-    // and cast the return type properly.
-    findRecipesByIngredients: async (ingredients: string[]): Promise<RecipeListItemDTO[]> => {
-        // Adjust this fetch call if your backend requires a POST request instead of query params!
-        const query = new URLSearchParams({ ingredients: ingredients.join(',') }).toString();
-        const res = await fetch(`${BASE_URL}/find?${query}`, { headers: getHeaders() });
+    findRecipesByIngredients: async (): Promise<RecipeListItemDTO[]> => {
+        const res = await fetch(`${BASE_URL}/find`, { headers: getHeaders() });
         return res.json() as Promise<RecipeListItemDTO[]>;
     },
 

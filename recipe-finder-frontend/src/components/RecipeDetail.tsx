@@ -1,6 +1,7 @@
-import React, {useState, useEffect, type CSSProperties} from 'react';
+import React, {useState, useEffect} from 'react';
 import {recipeService} from '../service/RecipeService.ts';
 import type {RecipeDetailDTO, IngredientResponseDTO} from '../dtos/types.ts';
+import {recipeDetailStyles} from "../styles/componentStyles.ts";
 
 interface RecipeDetailProps {
     id: number;
@@ -32,98 +33,34 @@ export default function RecipeDetail({id, onBack, onEdit, onDelete}: RecipeDetai
         fetchDetails();
     }, [id]);
 
-    const styles = {
-        wrapper: {
-            maxWidth: '800px',
-            margin: '0 auto',
-            backgroundColor: '#fff',
-            borderRadius: '12px',
-            border: '1px solid #e2e8f0',
-            overflow: 'hidden'
-        } as CSSProperties,
-        actionBar: {
-            padding: '16px',
-            backgroundColor: '#f8fafc',
-            borderBottom: '1px solid #e2e8f0',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center'
-        } as CSSProperties,
-        backBtn: {
-            background: 'none',
-            border: 'none',
-            color: '#475569',
-            cursor: 'pointer',
-            fontWeight: '500'
-        } as CSSProperties,
-        actionGroup: {display: 'flex', gap: '8px'} as CSSProperties,
-        editBtn: {
-            padding: '6px 12px',
-            backgroundColor: '#fef3c7',
-            color: '#d97706',
-            border: 'none',
-            borderRadius: '6px',
-            cursor: 'pointer'
-        } as CSSProperties,
-        delBtn: {
-            padding: '6px 12px',
-            backgroundColor: '#fee2e2',
-            color: '#dc2626',
-            border: 'none',
-            borderRadius: '6px',
-            cursor: 'pointer'
-        } as CSSProperties,
-        img: {width: '100%', height: '260px', objectFit: 'cover'} as CSSProperties,
-        content: {padding: '32px'} as CSSProperties,
-        title: {fontSize: '28px', fontWeight: 'bold', margin: '0 0 4px 0', color: '#0f172a'} as CSSProperties,
-        author: {fontSize: '14px', color: '#64748b', margin: '0 0 24px 0'} as CSSProperties,
-        grid: {display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '32px'} as CSSProperties,
-        sectionTitle: {
-            fontSize: '18px',
-            fontWeight: '600',
-            borderBottom: '2px solid #f1f5f9',
-            paddingBottom: '8px',
-            margin: '0 0 12px 0'
-        } as CSSProperties,
-        list: {listStyle: 'none', padding: 0, margin: 0} as CSSProperties,
-        listItem: {
-            padding: '10px 0',
-            borderBottom: '1px solid #f1f5f9',
-            display: 'flex',
-            justifyContent: 'space-between',
-            fontSize: '14px'
-        } as CSSProperties,
-        table: {width: '100%', borderCollapse: 'collapse', fontSize: '14px'} as CSSProperties,
-        tableCell: {padding: '8px 0', borderBottom: '1px solid #f1f5f9'} as CSSProperties,
-        prepBox: {marginTop: '32px', borderTop: '2px solid #f1f5f9', paddingTop: '24px'} as CSSProperties
-    };
+
 
     if (loading) return <div style={{textAlign: 'center', color: '#64748b'}}>Loading content...</div>;
     if (!recipe) return <div style={{textAlign: 'center', color: '#dc2626'}}>Recipe not found.</div>;
 
     return (
-        <div style={styles.wrapper}>
-            <div style={styles.actionBar}>
-                <button style={styles.backBtn} onClick={onBack}>← Back</button>
-                <div style={styles.actionGroup}>
-                    <button style={styles.editBtn} onClick={onEdit}>✏️ Edit</button>
-                    <button style={styles.delBtn} onClick={() => onDelete(recipe.id)}>🗑️ Delete</button>
+        <div style={recipeDetailStyles.wrapper}>
+            <div style={recipeDetailStyles.actionBar}>
+                <button style={recipeDetailStyles.backBtn} onClick={onBack}>← Back</button>
+                <div style={recipeDetailStyles.actionGroup}>
+                    <button style={recipeDetailStyles.editBtn} onClick={onEdit}>✏️ Edit</button>
+                    <button style={recipeDetailStyles.delBtn} onClick={() => onDelete(recipe.id)}>🗑️ Delete</button>
                 </div>
             </div>
 
             <img src={recipe.imageLink || "https://images.unsplash.com/photo-1495521821757-a1efb6729352?w=800"}
-                 alt={recipe.title} style={styles.img}/>
+                 alt={recipe.title} style={recipeDetailStyles.img}/>
 
-            <div style={styles.content}>
-                <h1 style={styles.title}>{recipe.title}</h1>
-                <p style={styles.author}>By {recipe.authorName || `Author ID: ${recipe.authorId}`}</p>
+            <div style={recipeDetailStyles.content}>
+                <h1 style={recipeDetailStyles.title}>{recipe.title}</h1>
+                <p style={recipeDetailStyles.author}>By {recipe.authorName || `Author ID: ${recipe.authorId}`}</p>
 
-                <div style={styles.grid}>
+                <div style={recipeDetailStyles.grid}>
                     <div>
-                        <h3 style={styles.sectionTitle}>Ingredients</h3>
-                        <ul style={styles.list}>
+                        <h3 style={recipeDetailStyles.sectionTitle}>Ingredients</h3>
+                        <ul style={recipeDetailStyles.list}>
                             {Object.entries(recipe.ingredients || {}).map(([name, amt]) => (
-                                <li key={name} style={styles.listItem}>
+                                <li key={name} style={recipeDetailStyles.listItem}>
                                     <strong>{name}</strong>
                                     <span>{amt.amount} {amt.unit}</span>
                                 </li>
@@ -132,15 +69,15 @@ export default function RecipeDetail({id, onBack, onEdit, onDelete}: RecipeDetai
                     </div>
 
                     <div>
-                        <h3 style={{...styles.sectionTitle, color: '#065f46'}}>🥗 Nutrition Facts</h3>
+                        <h3 style={{...recipeDetailStyles.sectionTitle, color: '#065f46'}}>🥗 Nutrition Facts</h3>
                         {nutrition.length === 0 ? <p style={{fontSize: '12px', color: '#94a3b8'}}>None provided.</p> : (
-                            <table style={styles.table}>
+                            <table style={recipeDetailStyles.table}>
                                 <tbody>
                                 {nutrition.map((item, i) => (
                                     <tr key={i}>
-                                        <td style={styles.tableCell}>{item.name}</td>
+                                        <td style={recipeDetailStyles.tableCell}>{item.name}</td>
                                         <td style={{
-                                            ...styles.tableCell,
+                                            ...recipeDetailStyles.tableCell,
                                             textAlign: 'right',
                                             fontWeight: '500'
                                         }}>{item.kcalPer100g} kcal/100g
@@ -153,8 +90,8 @@ export default function RecipeDetail({id, onBack, onEdit, onDelete}: RecipeDetai
                     </div>
                 </div>
 
-                <div style={styles.prepBox}>
-                    <h3 style={styles.sectionTitle}>Preparation Instructions</h3>
+                <div style={recipeDetailStyles.prepBox}>
+                    <h3 style={recipeDetailStyles.sectionTitle}>Preparation Instructions</h3>
                     <p style={{
                         color: '#334155',
                         lineHeight: '1.6',

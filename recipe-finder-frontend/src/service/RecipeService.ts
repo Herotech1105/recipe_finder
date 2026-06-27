@@ -1,6 +1,5 @@
 import type { RecipeListItemDTO, RecipeDetailDTO, IngredientResponseDTO, RecipeRequestDTO } from '../dtos/types.ts';
 
-// Adjusted to match HTTP tests: localhost:8080/recipes
 const RECIPE_URL = '/api/recipes';
 const STORAGE_URL = '/api/storage';
 

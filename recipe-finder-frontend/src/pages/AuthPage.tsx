@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import {authPageStyles} from "../styles/pagesStyles.ts";
 
 interface Props {
     setAuthTrigger: React.Dispatch<React.SetStateAction<number>>;
@@ -77,63 +78,63 @@ const AuthPage = (props: Props) => {
     };
 
     return (
-        <div style={styles.container}>
-            <div style={styles.card}>
+        <div style={authPageStyles.container}>
+            <div style={authPageStyles.card}>
                 <h2 style={{textAlign: 'center', margin: '0 0 20px 0'}}>
                     {isLogin ? 'Login' : 'Create an Account'}
                 </h2>
 
-                {error && <div style={styles.error}>{error}</div>}
+                {error && <div style={authPageStyles.error}>{error}</div>}
 
-                <form onSubmit={handleSubmit} style={styles.form}>
+                <form onSubmit={handleSubmit} style={authPageStyles.form}>
                     {!isLogin && (
                         <>
-                            <div style={styles.inputGroup}>
-                                <label style={styles.label}>Email</label>
+                            <div style={authPageStyles.inputGroup}>
+                                <label style={authPageStyles.label}>Email</label>
                                 <input
                                     type="email"
                                     name="email"
                                     value={formData.email}
                                     onChange={handleChange}
-                                    style={styles.input}
+                                    style={authPageStyles.input}
                                     required
                                 />
                             </div>
                         </>
                     )}
 
-                    <div style={styles.inputGroup}>
-                        <label style={styles.label}>Username</label>
+                    <div style={authPageStyles.inputGroup}>
+                        <label style={authPageStyles.label}>Username</label>
                         <input
                             type="text"
                             name="username"
                             value={formData.username}
                             onChange={handleChange}
-                            style={styles.input}
+                            style={authPageStyles.input}
                             required
                         />
                     </div>
 
-                    <div style={styles.inputGroup}>
-                        <label style={styles.label}>Password</label>
+                    <div style={authPageStyles.inputGroup}>
+                        <label style={authPageStyles.label}>Password</label>
                         <input
                             type="password"
                             name="password"
                             value={formData.password}
                             onChange={handleChange}
-                            style={styles.input}
+                            style={authPageStyles.input}
                             required
                         />
                     </div>
 
-                    <button type="submit" disabled={loading} style={styles.button}>
+                    <button type="submit" disabled={loading} style={authPageStyles.button}>
                         {loading ? 'Processing...' : isLogin ? 'Sign In' : 'Sign Up'}
                     </button>
                 </form>
 
-                <p style={styles.toggleText}>
+                <p style={authPageStyles.toggleText}>
                     {isLogin ? "Don't have an account? " : "Already have an account? "}
-                    <span style={styles.toggleLink} onClick={() => {
+                    <span style={authPageStyles.toggleLink} onClick={() => {
                         setIsLogin(!isLogin);
                         setError('');
                     }}>
@@ -145,58 +146,5 @@ const AuthPage = (props: Props) => {
     );
 };
 
-const styles: Record<string, React.CSSProperties> = {
-    container: {
-        boxSizing: 'border-box',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        minHeight: '100vh',
-        backgroundColor: '#f5f5f5',
-        fontFamily: 'sans-serif',
-        padding: '20px'
-    },
-    card: {
-        boxSizing: 'border-box',
-        padding: '30px',
-        borderRadius: '8px',
-        backgroundColor: '#fff',
-        boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
-        width: '100%',
-        maxWidth: '400px'
-    },
-    form: {display: 'flex', flexDirection: 'column', gap: '15px'},
-    inputGroup: {display: 'flex', flexDirection: 'column', gap: '5px'},
-    label: {fontSize: '14px', fontWeight: 'bold', color: '#333'},
-    input: {
-        boxSizing: 'border-box',
-        width: '100%',
-        padding: '10px',
-        borderRadius: '4px',
-        border: '1px solid #ccc',
-        fontSize: '14px'
-    },
-    button: {
-        padding: '10px',
-        backgroundColor: '#007bff',
-        color: '#fff',
-        border: 'none',
-        borderRadius: '4px',
-        cursor: 'pointer',
-        fontSize: '16px',
-        fontWeight: 'bold'
-    },
-    error: {
-        color: 'red',
-        backgroundColor: '#ffe6e6',
-        padding: '10px',
-        borderRadius: '4px',
-        fontSize: '14px',
-        textAlign: 'center',
-        marginBottom: '15px'
-    },
-    toggleText: {marginTop: '20px', textAlign: 'center', fontSize: '14px'},
-    toggleLink: {color: '#007bff', cursor: 'pointer', fontWeight: 'bold'}
-};
 
 export default AuthPage;

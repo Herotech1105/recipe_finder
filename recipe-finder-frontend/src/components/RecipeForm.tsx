@@ -116,7 +116,7 @@ export default function RecipeForm({recipeId, onSave, onCancel}: RecipeFormProps
                                style={{...recipeFormStyles.input, flex: 1}} required/>
                         <select value={row.unit} onChange={e => handleIngredientChange(i, 'unit', e.target.value)}
                                 style={{...recipeFormStyles.input, flex: 1, backgroundColor: '#fff'}}>
-                            {(['g', 'ml', 'Stck'] as Unit[]).map(u => (
+                            {(['Stck' , 'ml' , 'g' , 'TL' , 'EL' , 'NONE'] as Unit[]).map(u => (
                                 <option key={u} value={u}>{u}</option>
                             ))}
                         </select>

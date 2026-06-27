@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { type StorageIngredient } from '../dtos/types';
-import { pantryInventoryStyles } from "../styles/componentStyles";
+import {type StorageIngredient, type Unit} from '../dtos/types';
+import {pantryInventoryStyles, recipeFormStyles} from "../styles/componentStyles";
 
 interface PantryInventoryProps {
     storageIngredients: StorageIngredient[];
@@ -39,10 +39,12 @@ export default function PantryInventory({
                     <label style={pantryInventoryStyles.label}>Amount</label>
                     <input type="number" step="any" placeholder="500" value={newIngAmount} onChange={e => setNewIngAmount(parseFloat(e.target.value) || 0)} style={pantryInventoryStyles.input} required />
                 </div>
-                <div style={pantryInventoryStyles.inputGroup}>
-                    <label style={pantryInventoryStyles.label}>Unit</label>
-                    <input type="text" placeholder="g, ml, Stck" value={newIngUnit} onChange={e => setNewIngUnit(e.target.value)} style={pantryInventoryStyles.input} required />
-                </div>
+                <select id={"select"} value={newIngUnit} onChange={() => setNewIngUnit(document.getElementById("select").value)}
+                        style={pantryInventoryStyles.inputGroup}>
+                    {(['Stck' , 'ml' , 'g' , 'TL' , 'EL' , 'NONE'] as Unit[]).map(u => (
+                        <option key={u} value={u}>{u}</option>
+                    ))}
+                </select>
                 <button type="submit" style={pantryInventoryStyles.actionBtn}>Add / Update</button>
             </form>
 

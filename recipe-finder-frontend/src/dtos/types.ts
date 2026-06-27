@@ -1,4 +1,4 @@
-export type Unit = 'g' | 'ml' | 'Stck';
+export type Unit = 'Stck' | 'ml' | 'g' | 'TL' | 'EL' | 'NONE';
 
 interface IngredientDetails {
     unit: string;
